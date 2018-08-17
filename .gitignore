@@ -1,0 +1,5 @@
+zhxs/target/
+zhxs-web/target/
+.idea/
+*.iml
+zhxs-web/src/main/webapp/upload/
