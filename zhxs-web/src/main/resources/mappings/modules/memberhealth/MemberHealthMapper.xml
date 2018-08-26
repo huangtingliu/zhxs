@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhxs.modules.pension.memberhealth.mapper.MemberHealthMapper" >
+
+  <sql id="Base_Column_List" >
+    t.health_id,
+    t.member_id,
+    t.self_care,
+    t.vision,
+    t.main_hospital,
+    t.main_physician,
+    t.hospital_phone,
+    t.drug_allergy,
+    t.disease,
+    t.disease_history,
+    t.hearing
+  </sql>
+  
+</mapper>

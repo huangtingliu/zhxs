@@ -460,7 +460,11 @@ function rowDialogDetailRefresh(title,url,gridId,id,width,height){
 	var url=preprocessUrl(url,id);
 	openDialogDetailRefresh(title,url,gridId,width,height);
 }
-
+//打开对话框(查看)
+function rowDetailDialog(title,url,gridId,id,width,height){
+    url=url.replace("{id}",id);
+    openDialogDetailRefresh(title,url,gridId,width,height);
+}
 //打开对话框(查看)
 function rowDialogDetail(title,url,width,height){
 	var url=preprocessUrl(url,id);
@@ -495,19 +499,50 @@ function isContains(str, substr) {
  * @param addurl//目标页面地址
  * @param id//主键字段
  */
+// function detail(title,url, gridId,width,height) {
+// 	debugger
+// 	var rowsData =$("#"+gridId).bootstrapTable('getSelections');
+//     if (!rowsData || rowsData.length==0) {
+// 	  top.layer.alert('请至少选择一条数据!', {icon: 0, title:'警告'});
+// 		return;
+// 	}
+//     if (rowsData.length>1) {
+//     	top.layer.alert('只能选择一条数据!', {icon: 0, title:'警告'});
+// 		return;
+// 	}
+//
+//     var id = rowsData[0].id;;
+//     openDialogView(title,url+"&id="+id,"800px", "500px","");
+// }
+/**
+ * 查看详细事件打开窗口
+ * @param title 查看框标题
+ * @param addurl//目标页面地址
+ * @param id//主键字段
+ */
 function detail(title,url, gridId,width,height) {
-	var rowsData =$("#"+gridId).bootstrapTable('getSelections');
+	debugger
+    var rowsData = $("#"+gridId).jqGrid('getGridParam','selarrrow');
+    var multiselect=$("#"+gridId).jqGrid('getGridParam','multiselect');
+    var rowData= $("#"+gridId).jqGrid('getGridParam','selrow');
+    if(!multiselect)
+    {
+        if(rowData)
+        {
+            rowsData[0]=rowData;
+        }
+    }
     if (!rowsData || rowsData.length==0) {
 	  top.layer.alert('请至少选择一条数据!', {icon: 0, title:'警告'});
-		return; 
+		return;
 	}
     if (rowsData.length>1) {
     	top.layer.alert('只能选择一条数据!', {icon: 0, title:'警告'});
 		return;
 	}
-    
-    var id = rowsData[0].id;;
-    openDialogView(title,url+"&id="+id,"800px", "500px","");
+
+    var id = rowsData[0];
+    openDialogDetailRefresh(title,url+"?id="+id,gridId,width, height);
 }
 
 

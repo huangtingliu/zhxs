@@ -1,4 +1,4 @@
-package ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.controller;
+package cn.zhxs.modules.pension.memberhealth.controller;
 
 import cn.zhxs.core.common.data.DuplicateValid;
 import cn.zhxs.core.model.AjaxJson;
@@ -26,28 +26,28 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.entity.${entityName?cap_first};
-import ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.service.I${entityName?cap_first}Service;
+import cn.zhxs.modules.pension.memberhealth.entity.MemberHealth;
+import cn.zhxs.modules.pension.memberhealth.service.IMemberHealthService;
 
 /**   
- * @Title: ${functionName}
- * @Description: ${functionDesc}
- * @author ${functionAuthor}
- * @date ${time}
+ * @Title: member_health
+ * @Description: member_health
+ * @author huangtl
+ * @date 2018-08-26 18:07:38
  * @version V1.0   
  *
  */
 @Controller
-@RequestMapping("${r'${admin.url.prefix}'}/${moduleName}/${entityName?lower_case}")
-@RequiresPathPermission("${moduleName}:${entityName?lower_case}")
-public class ${entityName?cap_first}Controller extends BaseBeanController<${entityName?cap_first}> {
+@RequestMapping("${admin.url.prefix}/memberhealth/memberhealth")
+@RequiresPathPermission("memberhealth:memberhealth")
+public class MemberHealthController extends BaseBeanController<MemberHealth> {
 
     @Autowired
-    protected I${entityName?cap_first}Service ${entityName?uncap_first}Service;
+    protected IMemberHealthService memberHealthService;
 
-    public ${entityName?cap_first} get(String id) {
+    public MemberHealth get(String id) {
         if (!ObjectUtils.isNullOrEmpty(id)) {
-            return ${entityName?uncap_first}Service.selectById(id);
+            return memberHealthService.selectById(id);
         } else {
             return newModel();
         }
@@ -63,12 +63,12 @@ public class ${entityName?cap_first}Controller extends BaseBeanController<${enti
     @PageableDefaults(sort = "id=desc")
     private void ajaxList(Queryable queryable, PropertyPreFilterable propertyPreFilterable, HttpServletRequest request,
                           HttpServletResponse response) throws IOException {
-        EntityWrapper<${entityName?cap_first}> entityWrapper = new EntityWrapper<${entityName?cap_first}>(entityClass);
+        EntityWrapper<MemberHealth> entityWrapper = new EntityWrapper<MemberHealth>(entityClass);
         propertyPreFilterable.addQueryProperty("id");
         // 预处理
         QueryableConvertUtils.convertQueryValueToEntityValue(queryable, entityClass);
         SerializeFilter filter = propertyPreFilterable.constructFilter(entityClass);
-        PageJson<${entityName?cap_first}> pagejson = new PageJson<${entityName?cap_first}>(${entityName?uncap_first}Service.list(queryable,entityWrapper));
+        PageJson<MemberHealth> pagejson = new PageJson<MemberHealth>(memberHealthService.list(queryable,entityWrapper));
         String content = JSON.toJSONString(pagejson, filter);
         StringUtils.printJson(response, content);
     }
@@ -83,33 +83,33 @@ public class ${entityName?cap_first}Controller extends BaseBeanController<${enti
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxJson create(Model model, @Valid @ModelAttribute("data") ${entityName?cap_first} ${entityName?uncap_first}, BindingResult result,
+    public AjaxJson create(Model model, @Valid @ModelAttribute("data") MemberHealth memberHealth, BindingResult result,
                            HttpServletRequest request, HttpServletResponse response) {
-        return doSave(${entityName?uncap_first}, request, response, result);
+        return doSave(memberHealth, request, response, result);
     }
 
     @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
     public String update(@PathVariable("id") String id, Model model, HttpServletRequest request,
                               HttpServletResponse response) {
-        ${entityName?cap_first} ${entityName?uncap_first} = get(id);
-        model.addAttribute("data", ${entityName?uncap_first});
+        MemberHealth memberHealth = get(id);
+        model.addAttribute("data", memberHealth);
         return display("edit");
     }
 
     @RequestMapping(value = "{id}/update", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxJson update(Model model, @Valid @ModelAttribute("data") ${entityName?cap_first} ${entityName?uncap_first}, BindingResult result,
+    public AjaxJson update(Model model, @Valid @ModelAttribute("data") MemberHealth memberHealth, BindingResult result,
                            HttpServletRequest request, HttpServletResponse response) {
-        return doSave(${entityName?uncap_first}, request, response, result);
+        return doSave(memberHealth, request, response, result);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxJson doSave(${entityName?cap_first} ${entityName?uncap_first}, HttpServletRequest request, HttpServletResponse response,
+    public AjaxJson doSave(MemberHealth memberHealth, HttpServletRequest request, HttpServletResponse response,
                            BindingResult result) {
         AjaxJson ajaxJson = new AjaxJson();
         ajaxJson.success("保存成功");
-        if (hasError(${entityName?uncap_first}, result)) {
+        if (hasError(memberHealth, result)) {
             // 错误提示
             String errorMsg = errorMsg(result);
             if (!StringUtils.isEmpty(errorMsg)) {
@@ -120,10 +120,10 @@ public class ${entityName?cap_first}Controller extends BaseBeanController<${enti
             return ajaxJson;
         }
         try {
-            if (StringUtils.isEmpty(${entityName?uncap_first}.getId())) {
-                ${entityName?uncap_first}Service.insert(${entityName?uncap_first});
+            if (StringUtils.isEmpty(memberHealth.getId())) {
+                memberHealthService.insert(memberHealth);
             } else {
-                ${entityName?uncap_first}Service.insertOrUpdate(${entityName?uncap_first});
+                memberHealthService.insertOrUpdate(memberHealth);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,7 +138,7 @@ public class ${entityName?cap_first}Controller extends BaseBeanController<${enti
         AjaxJson ajaxJson = new AjaxJson();
         ajaxJson.success("删除成功");
         try {
-            ${entityName?uncap_first}Service.deleteById(id);
+            memberHealthService.deleteById(id);
         } catch (Exception e) {
             e.printStackTrace();
             ajaxJson.fail("删除失败");
@@ -153,7 +153,7 @@ public class ${entityName?cap_first}Controller extends BaseBeanController<${enti
         ajaxJson.success("删除成功");
         try {
             List<String> idList = java.util.Arrays.asList(ids);
-            ${entityName?uncap_first}Service.deleteBatchIds(idList);
+            memberHealthService.deleteBatchIds(idList);
         } catch (Exception e) {
             e.printStackTrace();
             ajaxJson.fail("删除失败");
@@ -164,8 +164,8 @@ public class ${entityName?cap_first}Controller extends BaseBeanController<${enti
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String view(Model model, @PathVariable("id") String id, HttpServletRequest request,
                        HttpServletResponse response) {
-        ${entityName?cap_first} ${entityName?uncap_first} = get(id);
-        model.addAttribute("data", ${entityName?uncap_first});
+        MemberHealth memberHealth = get(id);
+        model.addAttribute("data", memberHealth);
         return display("edit");
     }
 
@@ -175,8 +175,8 @@ public class ${entityName?cap_first}Controller extends BaseBeanController<${enti
         ValidJson validJson = new ValidJson();
         Boolean valid = Boolean.FALSE;
         try {
-            EntityWrapper<${entityName?cap_first}> entityWrapper = new EntityWrapper<${entityName?cap_first}>(entityClass);
-            valid = ${entityName?uncap_first}Service.doValid(duplicateValid,entityWrapper);
+            EntityWrapper<MemberHealth> entityWrapper = new EntityWrapper<MemberHealth>(entityClass);
+            valid = memberHealthService.doValid(duplicateValid,entityWrapper);
             if (valid) {
                 validJson.setStatus("y");
                 validJson.setInfo("验证通过!");

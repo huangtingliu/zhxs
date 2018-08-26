@@ -25,7 +25,7 @@ import cn.zhxs.core.utils.MessageUtils;
  */
 @SuppressWarnings("serial")
 public class DataGridButtonTag extends AbstractGridHtmlTag {
-	private static String[] INNER_DEFAULT_FUNCTION = { "delete" };
+	private static String[] INNER_DEFAULT_FUNCTION = { "delete","detail" };
 	private String title = "";// 标题文字
 	private String groupname = "";// 分组名
 	private String winwidth = "1000px";// 打开窗口宽度
@@ -142,6 +142,8 @@ public class DataGridButtonTag extends AbstractGridHtmlTag {
 				String url = "";
 				if (this.function.equals("delete")) {
 					url = parent.getBaseUrl() + "/{id}/delete";
+				} else if(this.function.equals("detail")){
+					url = parent.getBaseUrl() + "/{id}";
 				} else {
 					url = parent.getBaseUrl() + "/" + this.function;
 				}
@@ -156,6 +158,8 @@ public class DataGridButtonTag extends AbstractGridHtmlTag {
 				String outclass = "";
 				if (this.function.equals("delete")) {
 					outclass = "btn-danger";
+				}else if (this.function.equals("detail")) {
+					outclass = "btn-success";
 				}
 				staticAttributes.put("outclass", outclass);
 			}
@@ -164,6 +168,8 @@ public class DataGridButtonTag extends AbstractGridHtmlTag {
 				String innerclass = "";
 				if (this.function.equals("delete")) {
 					innerclass = "fa-trash";
+				}else if (this.function.equals("detail")) {
+					innerclass = "fa-file-text-o";
 				}
 				staticAttributes.put("innerclass", innerclass);
 			}

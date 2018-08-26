@@ -367,6 +367,8 @@
 				            <#if buttonItem.function?exists>
 				             	 <#if buttonItem.function=='delete'>
 				               		  href +="onclick=\"deleteRowData('${buttonItem.title!}','${buttonItem.url!}','"+row.id+"','${(id)}Grid')\"";
+				                  <#elseif buttonItem.function=='detail'>
+				                 		href +="onclick=\"rowDetailDialog('${buttonItem.title!}','${buttonItem.url!}','${(id)}Grid','"+row.id+"','${buttonItem.winwidth!}','${buttonItem.winheight!}')\"";
 				                  <#elseif buttonItem.function=='rowConfirm'>
 				                 	  href +="onclick=\"${buttonItem.function!}('${buttonItem.title!}','${buttonItem.url!}','"+row.id+"','${(id)}Grid','${buttonItem.tipMsg!}')\"";
 				                 <#else>

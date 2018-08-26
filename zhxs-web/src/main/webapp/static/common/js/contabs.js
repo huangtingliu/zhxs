@@ -191,8 +191,10 @@ function menuItem() {
     return false;
 }
 
-
-
+//在子窗体中关闭当前标签页
+function childCloseTab(){
+    $(".J_menuTab.active .fa-times-circle",parent.document).click();
+}
 
 // 关闭选项卡菜单
 function closeTab() {
@@ -310,6 +312,16 @@ function activeTab() {
 //刷新iframe
 function refreshTab() {
     var target = $('.J_iframe[data-id="' + $(this).data('id') + '"]');
+    var url = target.attr('src');
+    //显示loading提示
+    var loading = layer.load();
+    target.attr('src', url).load(function () {
+        //关闭loading提示
+        layer.close(loading);
+    });
+}
+function reloadTab(id) {
+    var target = $('.J_iframe[data-id="' + id + '"]',parent.document);
     var url = target.attr('src');
     //显示loading提示
     var loading = layer.load();
