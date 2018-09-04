@@ -1,6 +1,6 @@
 package ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.entity;
 
-import cn.jeeweb.core.common.entity.TreeEntity;
+import cn.zhxs.core.common.entity.TreeEntity;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;

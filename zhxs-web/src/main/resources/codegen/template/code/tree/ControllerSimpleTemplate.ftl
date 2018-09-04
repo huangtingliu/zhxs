@@ -3,8 +3,8 @@ package ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}<
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import cn.jeeweb.core.common.controller.BaseTreeController;
-import cn.jeeweb.core.security.shiro.authz.annotation.RequiresPathPermission;
+import cn.zhxs.core.common.controller.BaseTreeController;
+import cn.zhxs.core.security.shiro.authz.annotation.RequiresPathPermission;
 import ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.entity.${entityName?cap_first};
 
 /**   

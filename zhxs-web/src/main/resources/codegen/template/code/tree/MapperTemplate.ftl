@@ -1,6 +1,6 @@
 package ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.mapper;
 
-import cn.jeeweb.core.common.mapper.BaseTreeMapper;
+import cn.zhxs.core.common.mapper.BaseTreeMapper;
 import ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.entity.${entityName?cap_first};
  
 /**   

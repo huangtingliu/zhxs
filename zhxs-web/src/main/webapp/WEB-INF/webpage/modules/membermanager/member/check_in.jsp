@@ -240,7 +240,6 @@
 <script src="${staticPath}/modules/member/checkIn.js"></script>
 <script>
     var adminPath = "${adminPath}";
-    console.log('${data}');
     submitCheckiInInit(function(){
         toCheckIn('${data.id}',2);
         reloadTab("/admin//membermanager/member");

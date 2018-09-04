@@ -108,6 +108,7 @@
     submitCheckiInInit(function(){
         toCheckIn('${health.memberId}',4);
 	});
+    closeTabInit();
 
 </script>
 </body>

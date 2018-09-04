@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhxs.modules.repast.food.mapper.RepastFoodMapper" >
+
+  <sql id="Base_Column_List" >
+    t.id,
+    t.create_by AS "createBy.id",
+    t.create_date,
+    t.update_by AS "updateBy.id",
+    t.update_date,
+    t.del_flag,
+    t.food_name,
+    t.type_id,
+    t.price,
+    t.food_desc
+  </sql>
+
+  <select id="selectPage" resultType="cn.zhxs.modules.repast.food.entity.RepastFood">
+    select
+    t1.type_name,
+    <include refid="Base_Column_List"/>
+    from repast_food t
+    left join repast_food_type t1 on t.type_id = t1.id
+    <where> 1=1
+      ${ew.sqlSegment}
+    </where>
+  </select>
+</mapper>

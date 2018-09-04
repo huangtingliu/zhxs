@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.zhxs.core.query.data.Queryable;
 import cn.zhxs.modules.codegen.codegenerator.utils.CodeGenUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,12 @@ public class TableController extends BaseCRUDController<Table, String> {
 
 	private String[] types = { "String", "Double", "Text", "Date", "Blob", "Short", "Integer", "Boolean", "User",
 			"this" };
+
+	@Override
+	public void preAjaxList(Queryable queryable, EntityWrapper<Table> entityWrapper, HttpServletRequest request, HttpServletResponse response) {
+		entityWrapper.orderBy("create_date",false);
+		super.preAjaxList(queryable, entityWrapper, request, response);
+	}
 
 	@Override
 	public void preEdit(Table table, Model model, HttpServletRequest request, HttpServletResponse response) {

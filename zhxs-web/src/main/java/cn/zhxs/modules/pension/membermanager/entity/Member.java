@@ -115,6 +115,8 @@ public class Member extends AbstractEntity<String> {
     /**登记步骤 1.基本信息 2.家属信息 3.健康 4.护理任务 5.餐饮床位 6.入院缴费 7.附件*/
     @TableField(value = "step")
 	private int step;
+    @TableField(value = "org_id")
+	private String orgId;
 
 	@Override
 	public String getId() {
@@ -577,5 +579,13 @@ public class Member extends AbstractEntity<String> {
 
 	public void setStep(int step) {
 		this.step = step;
+	}
+
+	public String getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
 	}
 }

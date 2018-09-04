@@ -1,7 +1,7 @@
 package ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.service.impl;
 
-import cn.jeeweb.core.common.service.impl.CommonServiceImpl;
-import cn.jeeweb.core.query.wrapper.EntityWrapper;
+import cn.zhxs.core.common.service.impl.CommonServiceImpl;
+import cn.zhxs.core.query.wrapper.EntityWrapper;
 import ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.mapper.${entityName?cap_first}Mapper;
 import ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.entity.${entityName?cap_first};
 import ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</#if></#if>.service.I${entityName?cap_first}Service;
@@ -12,8 +12,8 @@ import ${packageName}<#if moduleName?exists><#if moduleName!=''>.${moduleName}</
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import cn.jeeweb.core.utils.ServletUtils;
-import cn.jeeweb.core.utils.StringUtils;
+import cn.zhxs.core.utils.ServletUtils;
+import cn.zhxs.core.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import com.alibaba.fastjson.JSONObject;

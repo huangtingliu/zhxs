@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhxs.modules.repast.repastpackage.mapper.RepastPackageMapper" >
+
+  <sql id="Base_Column_List" >
+    t.package_id,
+    t.package_name,
+    t.price_range,
+    t.price,
+    t.price_time,
+    t.package_desc,
+    t.food_type_desc,
+    t.create_time
+  </sql>
+  
+</mapper>

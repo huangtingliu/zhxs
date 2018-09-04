@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhxs.modules.repast.foodtype.mapper.RepastFoodTypeMapper" >
+
+  <sql id="Base_Column_List" >
+    t.type_name,
+    t.price_range,
+    t.id,
+    t.type_desc,
+    t.delFlag
+  </sql>
+  
+</mapper>

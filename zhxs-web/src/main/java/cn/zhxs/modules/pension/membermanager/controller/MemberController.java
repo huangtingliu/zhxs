@@ -19,7 +19,9 @@ import cn.zhxs.modules.pension.memberrelation.entity.MemberRelation;
 import cn.zhxs.modules.pension.memberrelation.service.IMemberRelationService;
 import cn.zhxs.modules.pension.nursing.entity.MemberNursing;
 import cn.zhxs.modules.pension.nursing.service.IMemberNursingService;
+import cn.zhxs.modules.sys.entity.Organization;
 import cn.zhxs.modules.sys.entity.User;
+import cn.zhxs.modules.sys.service.IOrganizationService;
 import cn.zhxs.modules.sys.utils.UserUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeFilter;
@@ -63,6 +65,8 @@ public class MemberController extends BaseBeanController<Member> {
     protected IMemberHealthService healthService;
     @Autowired
     protected IMemberNursingService nursingService;
+    @Autowired
+    protected IOrganizationService organizationService;
 
     public Member get(String id) {
         if (!ObjectUtils.isNullOrEmpty(id)) {
@@ -109,6 +113,16 @@ public class MemberController extends BaseBeanController<Member> {
                            HttpServletRequest request, HttpServletResponse response) {
         member.setCreateTime(DateUtils.getDateTime());
         User user = UserUtils.getUser();
+        List<Organization> orgs = organizationService.findListByUserId(user.getId());
+
+        String orgId = "";
+        for (Organization org : orgs) {
+            orgId+=org.getId()+",";
+        }
+        if(orgs.size()>0){
+            orgId = orgId.substring(0,orgId.length()-1);
+        }
+        member.setOrgId(orgId);
         member.setCreateUserId(user.getId());
         member.setCreateUserName(user.getRealname());
         return doSave(member, request, response, result);
@@ -131,7 +145,7 @@ public class MemberController extends BaseBeanController<Member> {
         Member member = get(id);
         if(null!=step){
             member.setStep(step);
-            //memberService.insertOrUpdate(member);
+            memberService.insertOrUpdate(member);
         }else {
             step = member.getStep();
         }
@@ -245,10 +259,23 @@ public class MemberController extends BaseBeanController<Member> {
     @ResponseBody
     public AjaxJson checkIn(Model model, @Valid @ModelAttribute("data") Member member, BindingResult result,
                            HttpServletRequest request, HttpServletResponse response) {
-
+        member.setCreateTime(DateUtils.getDateTime());
+        User user = UserUtils.getUser();
+        member.setCreateUserId(user.getId());
+        member.setCreateUserName(user.getRealname());
         if(member.getStep()<7) {
             member.setStep(member.getStep() + 1);
         }
+        List<Organization> orgs = organizationService.findListByUserId(user.getId());
+
+        String orgId = "";
+        for (Organization org : orgs) {
+            orgId+=org.getId()+",";
+        }
+        if(orgs.size()>0){
+            orgId = orgId.substring(0,orgId.length()-1);
+        }
+        member.setOrgId(orgId);
         return doSave(member, request, response, result);
     }
 
