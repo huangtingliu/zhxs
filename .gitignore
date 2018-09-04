@@ -3,3 +3,4 @@ zhxs-web/target/
 .idea/
 *.iml
 zhxs-web/src/main/webapp/upload/
+zhxs-common/target/

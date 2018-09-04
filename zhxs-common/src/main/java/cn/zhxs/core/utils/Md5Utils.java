@@ -1,4 +1,4 @@
-package cn.zhxs.core.security.utils;
+package cn.zhxs.core.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 
 public class Md5Utils {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(cn.zhxs.core.utils.Md5Utils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Md5Utils.class);
 
 	private static byte[] md5(String s) {
 		MessageDigest algorithm;

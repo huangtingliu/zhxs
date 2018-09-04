@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>zhxs-web</module>
+        <module>zhxs-common</module>
     </modules>
 
 </project>
