@@ -13,12 +13,19 @@ import cn.zhxs.core.security.shiro.authz.annotation.RequiresMethodPermissions;
 import cn.zhxs.core.utils.DateUtils;
 import cn.zhxs.core.utils.ObjectUtils;
 import cn.zhxs.core.utils.StringUtils;
+import cn.zhxs.modules.pension.memberbed.entity.MemberBed;
+import cn.zhxs.modules.pension.memberbed.service.IMemberBedService;
 import cn.zhxs.modules.pension.memberhealth.entity.MemberHealth;
 import cn.zhxs.modules.pension.memberhealth.service.IMemberHealthService;
+import cn.zhxs.modules.pension.membermanager.entity.MemberRepastBed;
 import cn.zhxs.modules.pension.memberrelation.entity.MemberRelation;
 import cn.zhxs.modules.pension.memberrelation.service.IMemberRelationService;
+import cn.zhxs.modules.pension.memberrepastpackage.entity.MemberRepastPackage;
+import cn.zhxs.modules.pension.memberrepastpackage.service.IMemberRepastPackageService;
 import cn.zhxs.modules.pension.nursing.entity.MemberNursing;
 import cn.zhxs.modules.pension.nursing.service.IMemberNursingService;
+import cn.zhxs.modules.repast.repastpackage.entity.RepastPackage;
+import cn.zhxs.modules.repast.repastpackage.service.IRepastPackageService;
 import cn.zhxs.modules.sys.entity.Organization;
 import cn.zhxs.modules.sys.entity.User;
 import cn.zhxs.modules.sys.service.IOrganizationService;
@@ -67,6 +74,12 @@ public class MemberController extends BaseBeanController<Member> {
     protected IMemberNursingService nursingService;
     @Autowired
     protected IOrganizationService organizationService;
+    @Autowired
+    protected IMemberRepastPackageService memberRepastPackageService;
+    @Autowired
+    protected IRepastPackageService repastPackageService;
+    @Autowired
+    protected IMemberBedService memberBedService;
 
     public Member get(String id) {
         if (!ObjectUtils.isNullOrEmpty(id)) {
@@ -149,10 +162,12 @@ public class MemberController extends BaseBeanController<Member> {
         }else {
             step = member.getStep();
         }
+        //基础信息登记
         if(step==1){
             model.addAttribute("data", member);
             return display("check_in");
         }
+        //家属登记
         if(step==2){
             EntityWrapper entityWrapper = new EntityWrapper<MemberRelation>();
             entityWrapper.eq("member_id",member.getId());
@@ -163,6 +178,7 @@ public class MemberController extends BaseBeanController<Member> {
             model.addAttribute("relations", relations);
             return display("check_in_relation");
         }
+        //健康登记
         if(step==3){
             Wrapper<MemberHealth> healthWrapper = new EntityWrapper<MemberHealth>();
             healthWrapper.eq("member_id",member.getId());
@@ -174,6 +190,7 @@ public class MemberController extends BaseBeanController<Member> {
             model.addAttribute("health", health);
             return display("check_in_health");
         }
+        //护理登记
         if(step==4){
 
             Wrapper<MemberNursing> nursingWrapper = new EntityWrapper<MemberNursing>();
@@ -186,8 +203,46 @@ public class MemberController extends BaseBeanController<Member> {
             model.addAttribute("nursing", nursing);
             return display("check_in_nursing");
         }
+        //餐饮套餐和床位登记
         if(step==5){
-            return display("check_in");
+            MemberRepastBed memberRepastBed = new MemberRepastBed();
+            memberRepastBed.setMemberId(member.getId());
+            //餐饮信息
+            Wrapper<MemberRepastPackage> repastMemberPackageWrapper = new EntityWrapper<MemberRepastPackage>();
+            repastMemberPackageWrapper.eq("member_id",member.getId());
+            MemberRepastPackage memberRepastPackage = memberRepastPackageService.selectOne(repastMemberPackageWrapper);
+            if(memberRepastPackage==null){
+                memberRepastPackage = new MemberRepastPackage();
+                memberRepastPackage.setMemberId(member.getId());
+            }else {
+                memberRepastBed.setPackageId(memberRepastPackage.getId());
+                memberRepastBed.setPackageDetail(memberRepastPackage.getPackageDetail());
+                memberRepastBed.setPackagePrice(memberRepastPackage.getPrice());
+            }
+            //model.addAttribute("memberRepastPackage", memberRepastPackage);
+            //床位
+            Wrapper<MemberBed> bedWrapper = new EntityWrapper<MemberBed>();
+            bedWrapper.eq("member_id",member.getId());
+            MemberBed memberBed = memberBedService.selectOne(bedWrapper);
+            if(memberBed==null){
+                memberBed = new MemberBed();
+                memberBed.setMemberId(member.getId());
+            }else{
+                memberRepastBed.setBedId(memberBed.getId());
+                memberRepastBed.setRoomType(memberBed.getRoomType());
+                memberRepastBed.setIsPrivate(memberBed.getIsPrivate());
+                memberRepastBed.setBedType(memberBed.getBedType());
+                memberRepastBed.setBedNo(memberBed.getBedNo());
+                memberRepastBed.setBedPrice(memberBed.getBedPrice());
+            }
+            //model.addAttribute("memberBed", memberBed);
+            model.addAttribute("memberRepastBed", memberRepastBed);
+
+            Wrapper<RepastPackage> repastPackageWrapper = new EntityWrapper<RepastPackage>();
+            List<RepastPackage> repastPackage = repastPackageService.selectList(repastPackageWrapper);
+            model.addAttribute("repastPackage", repastPackage);
+
+            return display("check_in_repast_bed");
         }
         if(step==6){
             return display("check_in");
@@ -237,7 +292,7 @@ public class MemberController extends BaseBeanController<Member> {
     }
 
     /**
-     * 保存健康
+     * 保存护理
      */
     @RequestMapping(value = "checkInNursing", method = RequestMethod.POST)
     @ResponseBody
@@ -248,6 +303,41 @@ public class MemberController extends BaseBeanController<Member> {
         ajaxJson.success("保存成功");
         try {
             nursingService.insertOrUpdate(nursing);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ajaxJson.fail("保存失败!<br />原因:" + e.getMessage());
+        }
+        return ajaxJson;
+    }
+
+    /**
+     * 保存餐饮床位
+     */
+    @RequestMapping(value = "checkInRepastBed", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxJson checkInRepastBed(Model model, @Valid @ModelAttribute("memberRepastBed") MemberRepastBed memberRepastBed, BindingResult result,
+                                    HttpServletRequest request, HttpServletResponse response) {
+
+        AjaxJson ajaxJson = new AjaxJson();
+        ajaxJson.success("保存成功");
+        try {
+            MemberBed memberBed = new MemberBed();
+            memberBed.setId(memberRepastBed.getBedId());
+            memberBed.setMemberId(memberRepastBed.getMemberId());
+            memberBed.setRoomType(memberRepastBed.getRoomType());
+            memberBed.setIsPrivate(memberRepastBed.getIsPrivate());
+            memberBed.setBedType(memberRepastBed.getBedType());
+            memberBed.setBedNo(memberRepastBed.getBedNo());
+            memberBed.setBedPrice(memberRepastBed.getBedPrice());
+            memberBedService.insertOrUpdate(memberBed);
+
+            MemberRepastPackage memberRepastPackage = new MemberRepastPackage();
+            memberRepastPackage.setId(memberRepastBed.getPackageId());
+            memberRepastPackage.setMemberId(memberRepastBed.getMemberId());
+            memberRepastPackage.setPackageDetail(memberRepastBed.getPackageDetail());
+            memberRepastPackage.setPrice(memberRepastBed.getPackagePrice());
+            memberRepastPackageService.insertOrUpdate(memberRepastPackage);
+
         } catch (Exception e) {
             e.printStackTrace();
             ajaxJson.fail("保存失败!<br />原因:" + e.getMessage());

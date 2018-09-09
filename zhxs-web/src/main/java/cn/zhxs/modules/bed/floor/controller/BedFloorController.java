@@ -66,6 +66,18 @@ public class BedFloorController extends BaseBeanController<BedFloor> {
         }
     }
 
+    /**
+     * 生成房间编号
+     * @param floor
+     * @param roomIndex
+     * @return
+     */
+    private String generateRoomNo(BedFloor floor,int roomIndex){
+        //房间编号为楼层编号+（01---XX）
+        String roomNo= roomIndex<10?(floor.getFloorNo()+"0"+roomIndex):(""+floor.getFloorNo()+roomIndex);
+        return roomNo;
+    }
+
     @RequiresMethodPermissions("list")
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model, HttpServletRequest request, HttpServletResponse response) {
@@ -139,7 +151,12 @@ public class BedFloorController extends BaseBeanController<BedFloor> {
         bedFloor.setUpdateDate(dateTime);
         bedFloor.setUpdateBy(user);
 
-        insertDefaultRoom(1,bedFloor);
+        BedFloor floor = get(bedFloor.getId());
+        if(floor.getRoomNumber()<bedFloor.getRoomNumber()){
+            insertDefaultRoom(floor.getRoomNumber()+1,bedFloor);
+        }else if(floor.getRoomNumber()>bedFloor.getRoomNumber()){
+            delDefaultRoom(bedFloor.getRoomNumber()+1,floor);
+        }
         return doSave(bedFloor, request, response, result);
     }
 
@@ -161,12 +178,33 @@ public class BedFloorController extends BaseBeanController<BedFloor> {
             bedRoom.setCreateDate(dateTime);
             bedRoom.setFloorId(bedFloor.getId());
             //房间编号为楼层编号+（01---XX）
-            String roomNo= start<10?(bedFloor.getFloorNo()+"0"+start):(""+bedFloor.getFloorNo()+start);
+            String roomNo= generateRoomNo(bedFloor,start);
             bedRoom.setRoomNo(roomNo);
+            bedRoom.setRoomNoText(roomNo);
             list.add(bedRoom);
             start++;
         }
         bedRoomService.insertBatch(list);
+    }
+
+    /**
+     * 删除楼层的房间
+     * @param start 开始删除的房间索引
+     * @param bedFloor 楼层
+     */
+    private void delDefaultRoom(int start,BedFloor bedFloor){
+        Wrapper<BedRoom> roomWrapper = new EntityWrapper<BedRoom>();
+        roomWrapper.eq("floor_id",bedFloor.getId());
+        roomWrapper.ge("room_no",generateRoomNo(bedFloor,start));
+
+        List<BedRoom> bedRooms = bedRoomService.selectList(roomWrapper);
+        if(bedRooms.size()>0) {
+            List<String> roomIds = new ArrayList<>();
+            for (BedRoom bedRoom : bedRooms) {
+                roomIds.add(bedRoom.getId());
+            }
+            bedRoomService.deleteBatchIds(roomIds);
+        }
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)

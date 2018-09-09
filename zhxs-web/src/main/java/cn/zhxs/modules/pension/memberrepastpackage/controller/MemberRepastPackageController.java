@@ -1,4 +1,4 @@
-package cn.zhxs.modules.bed.bed.controller;
+package cn.zhxs.modules.pension.memberrepastpackage.controller;
 
 import cn.zhxs.core.common.data.DuplicateValid;
 import cn.zhxs.core.model.AjaxJson;
@@ -10,7 +10,6 @@ import cn.zhxs.core.query.data.Queryable;
 import cn.zhxs.core.query.utils.QueryableConvertUtils;
 import cn.zhxs.core.query.wrapper.EntityWrapper;
 import cn.zhxs.core.security.shiro.authz.annotation.RequiresMethodPermissions;
-import cn.zhxs.core.utils.DateUtils;
 import cn.zhxs.core.utils.ObjectUtils;
 import cn.zhxs.core.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -27,28 +26,28 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import cn.zhxs.modules.bed.bed.entity.Bed;
-import cn.zhxs.modules.bed.bed.service.IBedService;
+import cn.zhxs.modules.pension.memberrepastpackage.entity.MemberRepastPackage;
+import cn.zhxs.modules.pension.memberrepastpackage.service.IMemberRepastPackageService;
 
 /**   
- * @Title: 床位
- * @Description: 床位
+ * @Title: 会员餐饮套餐信息
+ * @Description: 会员餐饮套餐信息
  * @author huangtl
- * @date 2018-09-02 18:43:23
+ * @date 2018-09-09 21:23:25
  * @version V1.0   
  *
  */
 @Controller
-@RequestMapping("${admin.url.prefix}/bed/bed")
-@RequiresPathPermission("bed:bed")
-public class BedController extends BaseBeanController<Bed> {
+@RequestMapping("${admin.url.prefix}/memberrepastpackage/memberrepastpackage")
+@RequiresPathPermission("memberrepastpackage:memberrepastpackage")
+public class MemberRepastPackageController extends BaseBeanController<MemberRepastPackage> {
 
     @Autowired
-    protected IBedService bedService;
+    protected IMemberRepastPackageService memberRepastPackageService;
 
-    public Bed get(String id) {
+    public MemberRepastPackage get(String id) {
         if (!ObjectUtils.isNullOrEmpty(id)) {
-            return bedService.selectById(id);
+            return memberRepastPackageService.selectById(id);
         } else {
             return newModel();
         }
@@ -64,12 +63,12 @@ public class BedController extends BaseBeanController<Bed> {
     @PageableDefaults(sort = "id=desc")
     private void ajaxList(Queryable queryable, PropertyPreFilterable propertyPreFilterable, HttpServletRequest request,
                           HttpServletResponse response) throws IOException {
-        EntityWrapper<Bed> entityWrapper = new EntityWrapper<Bed>(entityClass);
+        EntityWrapper<MemberRepastPackage> entityWrapper = new EntityWrapper<MemberRepastPackage>(entityClass);
         propertyPreFilterable.addQueryProperty("id");
         // 预处理
         QueryableConvertUtils.convertQueryValueToEntityValue(queryable, entityClass);
         SerializeFilter filter = propertyPreFilterable.constructFilter(entityClass);
-        PageJson<Bed> pagejson = new PageJson<Bed>(bedService.list(queryable,entityWrapper));
+        PageJson<MemberRepastPackage> pagejson = new PageJson<MemberRepastPackage>(memberRepastPackageService.list(queryable,entityWrapper));
         String content = JSON.toJSONString(pagejson, filter);
         StringUtils.printJson(response, content);
     }
@@ -84,34 +83,33 @@ public class BedController extends BaseBeanController<Bed> {
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxJson create(Model model, @Valid @ModelAttribute("data") Bed bed, BindingResult result,
+    public AjaxJson create(Model model, @Valid @ModelAttribute("data") MemberRepastPackage memberRepastPackage, BindingResult result,
                            HttpServletRequest request, HttpServletResponse response) {
-        return doSave(bed, request, response, result);
+        return doSave(memberRepastPackage, request, response, result);
     }
 
     @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
     public String update(@PathVariable("id") String id, Model model, HttpServletRequest request,
                               HttpServletResponse response) {
-        Bed bed = get(id);
-        model.addAttribute("data", bed);
+        MemberRepastPackage memberRepastPackage = get(id);
+        model.addAttribute("data", memberRepastPackage);
         return display("edit");
     }
 
     @RequestMapping(value = "{id}/update", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxJson update(Model model, @Valid @ModelAttribute("data") Bed bed, BindingResult result,
+    public AjaxJson update(Model model, @Valid @ModelAttribute("data") MemberRepastPackage memberRepastPackage, BindingResult result,
                            HttpServletRequest request, HttpServletResponse response) {
-        bed.setUpdateDate(DateUtils.getDateTime());
-        return doSave(bed, request, response, result);
+        return doSave(memberRepastPackage, request, response, result);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxJson doSave(Bed bed, HttpServletRequest request, HttpServletResponse response,
+    public AjaxJson doSave(MemberRepastPackage memberRepastPackage, HttpServletRequest request, HttpServletResponse response,
                            BindingResult result) {
         AjaxJson ajaxJson = new AjaxJson();
         ajaxJson.success("保存成功");
-        if (hasError(bed, result)) {
+        if (hasError(memberRepastPackage, result)) {
             // 错误提示
             String errorMsg = errorMsg(result);
             if (!StringUtils.isEmpty(errorMsg)) {
@@ -122,10 +120,10 @@ public class BedController extends BaseBeanController<Bed> {
             return ajaxJson;
         }
         try {
-            if (StringUtils.isEmpty(bed.getId())) {
-                bedService.insert(bed);
+            if (StringUtils.isEmpty(memberRepastPackage.getId())) {
+                memberRepastPackageService.insert(memberRepastPackage);
             } else {
-                bedService.insertOrUpdate(bed);
+                memberRepastPackageService.insertOrUpdate(memberRepastPackage);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,7 +138,7 @@ public class BedController extends BaseBeanController<Bed> {
         AjaxJson ajaxJson = new AjaxJson();
         ajaxJson.success("删除成功");
         try {
-            bedService.deleteById(id);
+            memberRepastPackageService.deleteById(id);
         } catch (Exception e) {
             e.printStackTrace();
             ajaxJson.fail("删除失败");
@@ -155,7 +153,7 @@ public class BedController extends BaseBeanController<Bed> {
         ajaxJson.success("删除成功");
         try {
             List<String> idList = java.util.Arrays.asList(ids);
-            bedService.deleteBatchIds(idList);
+            memberRepastPackageService.deleteBatchIds(idList);
         } catch (Exception e) {
             e.printStackTrace();
             ajaxJson.fail("删除失败");
@@ -166,8 +164,8 @@ public class BedController extends BaseBeanController<Bed> {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String view(Model model, @PathVariable("id") String id, HttpServletRequest request,
                        HttpServletResponse response) {
-        Bed bed = get(id);
-        model.addAttribute("data", bed);
+        MemberRepastPackage memberRepastPackage = get(id);
+        model.addAttribute("data", memberRepastPackage);
         return display("edit");
     }
 
@@ -177,8 +175,8 @@ public class BedController extends BaseBeanController<Bed> {
         ValidJson validJson = new ValidJson();
         Boolean valid = Boolean.FALSE;
         try {
-            EntityWrapper<Bed> entityWrapper = new EntityWrapper<Bed>(entityClass);
-            valid = bedService.doValid(duplicateValid,entityWrapper);
+            EntityWrapper<MemberRepastPackage> entityWrapper = new EntityWrapper<MemberRepastPackage>(entityClass);
+            valid = memberRepastPackageService.doValid(duplicateValid,entityWrapper);
             if (valid) {
                 validJson.setStatus("y");
                 validJson.setInfo("验证通过!");

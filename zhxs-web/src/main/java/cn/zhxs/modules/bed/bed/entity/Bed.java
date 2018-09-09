@@ -33,7 +33,7 @@ public class Bed extends AbstractEntity<String> {
     @TableField(value = "update_by",el="updateBy.id",fill = FieldFill.UPDATE)
 	private User updateBy;
     /**更新时间*/
-    @TableField(value = "update_date",fill = FieldFill.UPDATE)
+    @TableField(value = "update_date")
 	private String updateDate;
     /**删除标记（0：正常；1：删除）*/
     @TableField(value = "del_flag")
@@ -41,6 +41,9 @@ public class Bed extends AbstractEntity<String> {
     /**床位编号*/
     @TableField(value = "bed_no")
 	private String bedNo;
+    /**床位展示编号*/
+    @TableField(value = "bed_no_text")
+	private String bedNoText;
     /**床位类型*/
     @TableField(value = "bed_type")
 	private String bedType;
@@ -183,5 +186,12 @@ public class Bed extends AbstractEntity<String> {
 	public void setRoomId(String roomId){
 		this.roomId = roomId;
 	}
-	
+
+	public String getBedNoText() {
+		return bedNoText;
+	}
+
+	public void setBedNoText(String bedNoText) {
+		this.bedNoText = bedNoText;
+	}
 }

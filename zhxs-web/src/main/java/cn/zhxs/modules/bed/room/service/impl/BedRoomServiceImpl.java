@@ -44,12 +44,14 @@ public class BedRoomServiceImpl  extends CommonServiceImpl<BedRoomMapper,BedRoom
             Wrapper<Bed> bedWrapper = new EntityWrapper<Bed>();
             bedWrapper.eq("room_id",id);
             List<Bed> bedList = bedService.selectList(bedWrapper);
-            List<String> bedIdList =new ArrayList<>();
-            for (Bed bed : bedList) {
-                bedIdList.add(bed.getId());
+            if(bedList.size()>0) {
+                List<String> bedIdList = new ArrayList<>();
+                for (Bed bed : bedList) {
+                    bedIdList.add(bed.getId());
+                }
+                //删除该房间所有床位
+                bedService.deleteBatchIds(bedIdList);
             }
-            //删除该房间所有床位
-            bedService.deleteBatchIds(bedIdList);
         }
         return super.deleteBatchIds(idList);
     }

@@ -27,13 +27,13 @@ public class BedRoom extends AbstractEntity<String> {
     @TableField(value = "create_by",el="createBy.id",fill = FieldFill.INSERT)
 	private User createBy;
     /**创建时间*/
-    @TableField(value = "create_date",fill = FieldFill.INSERT)
+    @TableField(value = "create_date")
 	private String createDate;
     /**更新者*/
     @TableField(value = "update_by",el="updateBy.id",fill = FieldFill.UPDATE)
 	private User updateBy;
     /**更新时间*/
-    @TableField(value = "update_date",fill = FieldFill.UPDATE)
+    @TableField(value = "update_date")
 	private String updateDate;
     /**删除标记（0：正常；1：删除）*/
     @TableField(value = "del_flag")
@@ -44,12 +44,15 @@ public class BedRoom extends AbstractEntity<String> {
     /**房间编号*/
     @TableField(value = "room_no")
 	private String roomNo;
+    /**展示的房间编号*/
+    @TableField(value = "room_no_text")
+	private String roomNoText;
     /**房间类别*/
     @TableField(value = "room_type")
 	private String roomType;
     /**床位数*/
     @TableField(value = "bed_number")
-	private String bedNumber;
+	private int bedNumber;
     /**护理类别*/
     @TableField(value = "nursing_type")
 	private String nursingType;
@@ -196,7 +199,7 @@ public class BedRoom extends AbstractEntity<String> {
 	 * 获取  bedNumber
 	 *@return: String  床位数
 	 */
-	public String getBedNumber(){
+	public int getBedNumber(){
 		return this.bedNumber;
 	}
 
@@ -204,7 +207,7 @@ public class BedRoom extends AbstractEntity<String> {
 	 * 设置  bedNumber
 	 *@param: bedNumber  床位数
 	 */
-	public void setBedNumber(String bedNumber){
+	public void setBedNumber(int bedNumber){
 		this.bedNumber = bedNumber;
 	}
 	/**
@@ -237,5 +240,12 @@ public class BedRoom extends AbstractEntity<String> {
 	public void setFloorId(String floorId){
 		this.floorId = floorId;
 	}
-	
+
+	public String getRoomNoText() {
+		return roomNoText;
+	}
+
+	public void setRoomNoText(String roomNoText) {
+		this.roomNoText = roomNoText;
+	}
 }

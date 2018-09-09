@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zhxs.modules.pension.memberbed.mapper.MemberBedMapper" >
+
+  <sql id="Base_Column_List" >
+    t.id,
+    t.create_by AS "createBy.id",
+    t.create_date,
+    t.room_type,
+    t.is_private,
+    t.bed_type,
+    t.bed_no,
+    t.bed_price,
+    t.member_id
+  </sql>
+  
+</mapper>

@@ -10,10 +10,19 @@ import cn.zhxs.core.query.data.Queryable;
 import cn.zhxs.core.query.utils.QueryableConvertUtils;
 import cn.zhxs.core.query.wrapper.EntityWrapper;
 import cn.zhxs.core.security.shiro.authz.annotation.RequiresMethodPermissions;
+import cn.zhxs.core.utils.DateUtils;
 import cn.zhxs.core.utils.ObjectUtils;
 import cn.zhxs.core.utils.StringUtils;
+import cn.zhxs.modules.bed.bed.entity.Bed;
+import cn.zhxs.modules.bed.bed.service.IBedService;
+import cn.zhxs.modules.bed.floor.entity.BedFloor;
+import cn.zhxs.modules.bed.floor.service.IBedFloorService;
+import cn.zhxs.modules.bed.room.mapper.BedRoomMapper;
+import cn.zhxs.modules.sys.entity.User;
+import cn.zhxs.modules.sys.utils.UserUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeFilter;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import cn.zhxs.modules.bed.room.entity.BedRoom;
 import cn.zhxs.modules.bed.room.service.IBedRoomService;
@@ -44,6 +54,8 @@ public class BedRoomController extends BaseBeanController<BedRoom> {
 
     @Autowired
     protected IBedRoomService bedRoomService;
+    @Autowired
+    protected IBedService bedService;
 
     public BedRoom get(String id) {
         if (!ObjectUtils.isNullOrEmpty(id)) {
@@ -51,6 +63,17 @@ public class BedRoomController extends BaseBeanController<BedRoom> {
         } else {
             return newModel();
         }
+    }
+
+    /**
+     * 生成床位编号
+     * 床位编号为房间编号+（01---XX）
+     * @param bedRoom 房间号
+     * @param bedIndex 床位序号
+     * @return
+     */
+    private String generateBedNo(BedRoom bedRoom, int bedIndex) {
+        return bedIndex<10?(bedRoom.getRoomNo()+"0"+bedIndex):(""+bedRoom.getRoomNo()+bedIndex);
     }
 
     @RequiresMethodPermissions("list")
@@ -100,8 +123,62 @@ public class BedRoomController extends BaseBeanController<BedRoom> {
     @ResponseBody
     public AjaxJson update(Model model, @Valid @ModelAttribute("data") BedRoom bedRoom, BindingResult result,
                            HttpServletRequest request, HttpServletResponse response) {
+        bedRoom.setUpdateDate(DateUtils.getDateTime());
+        BedRoom room = get(bedRoom.getId());
+        if(room.getBedNumber()< bedRoom.getBedNumber()){
+            insertDefaultBed(room.getBedNumber()+1,bedRoom);
+        }else if(room.getBedNumber()>bedRoom.getBedNumber()){
+            delDefaultBed(bedRoom.getBedNumber()+1,room);
+        }
         return doSave(bedRoom, request, response, result);
     }
+
+    /**
+     * 添加默认的床位
+     * 1、根据房间的编号、床位数自动生成床位列表，床位编号为房间编号+（01---XX）
+     * 2、房间床位数修改时，自动增减相应的床位数目
+     * 3、房间编号变化时，床位编号重新生成
+     * @param start 起始床位序号
+     * @param bedRoom 房间信息
+     */
+    private void insertDefaultBed(int start,BedRoom bedRoom){
+        User user = UserUtils.getUser();
+        String dateTime = DateUtils.getDateTime();
+        List<Bed> list = new ArrayList<Bed>();
+        while (start<=bedRoom.getBedNumber()){
+            Bed bed = new Bed();
+            bed.setCreateBy(user);
+            bed.setCreateDate(dateTime);
+            bed.setRoomId(bedRoom.getId());
+            String bedNo= generateBedNo(bedRoom,start);
+            bed.setBedNo(bedNo);
+            bed.setBedNoText(bedNo);
+            list.add(bed);
+            start++;
+        }
+        bedService.insertBatch(list);
+    }
+
+    /**
+     * 删除房间的床位
+     * @param start 开始删除的床位序号
+     * @param bedRoom 房间
+     */
+    private void delDefaultBed(int start,BedRoom bedRoom){
+        Wrapper<Bed> bedWrapper = new EntityWrapper<Bed>();
+        bedWrapper.eq("room_id",bedRoom.getId());
+        bedWrapper.ge("bed_no",generateBedNo(bedRoom,start));
+
+        List<Bed> beds = bedService.selectList(bedWrapper);
+        if(beds.size()>0) {
+            List<String> bedIds = new ArrayList<>();
+            for (Bed bed : beds) {
+                bedIds.add(bed.getId());
+            }
+            bedService.deleteBatchIds(bedIds);
+        }
+    }
+
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody

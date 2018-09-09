@@ -1,4 +1,5 @@
 function toCheckIn(id,step){
+    debugger
     window.location.href = adminPath+"/membermanager/member/"+id+"/toCheckIn?step="+step;
 }
 
