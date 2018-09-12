@@ -248,7 +248,7 @@ public class MemberController extends BaseBeanController<Member> {
             return display("check_in");
         }
         if(step==7){
-            return display("check_in");
+            return display("check_in_");
         }
         return display("check_in");
     }

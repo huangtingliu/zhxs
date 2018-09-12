@@ -4,3 +4,5 @@ zhxs-web/target/
 *.iml
 zhxs-web/src/main/webapp/upload/
 zhxs-common/target/
+zhxs-service/target/
+out/

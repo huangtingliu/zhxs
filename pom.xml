@@ -11,6 +11,7 @@
     <modules>
         <module>zhxs-web</module>
         <module>zhxs-common</module>
+        <module>zhxs-service</module>
     </modules>
 
 </project>

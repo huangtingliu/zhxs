@@ -1,6 +1,5 @@
 package cn.zhxs.modules.sys.service.impl;
 
-import org.springframework.stereotype.Service;
 import cn.zhxs.core.common.service.impl.CommonServiceImpl;
 import cn.zhxs.core.query.data.Page;
 import cn.zhxs.core.query.data.PageImpl;
@@ -15,6 +14,7 @@ import cn.zhxs.modules.sys.mapper.UserOnlineMapper;
 import cn.zhxs.modules.sys.security.shiro.realm.UserRealm.Principal;
 import cn.zhxs.modules.sys.service.IUserOnlineService;
 import cn.zhxs.modules.sys.utils.UserUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;

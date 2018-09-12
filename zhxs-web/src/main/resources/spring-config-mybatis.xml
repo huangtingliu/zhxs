@@ -55,7 +55,7 @@
 	    <!-- 配置数据源 -->
 	    <property name="dataSource" ref="dataSource"/>
 	    <!-- 自动扫描 Xml 文件位置 -->
-	    <property name="mapperLocations" value="classpath:/mappings/**/*.xml"/>
+	    <property name="mapperLocations" value="classpath*:cn/zhxs/mappings/**/*.xml"/>
 	    <!-- 配置 Mybatis 配置文件（可无） -->
 	    <property name="configLocation" value="classpath:mybatis-config.xml"/>
 		<property name="configurationProperties">
@@ -64,7 +64,7 @@
 			</props>
 		</property>
 	    <!-- 配置包别名 -->
-	    <property name="typeAliasesPackage" value="cn.zhxs.modules.*.entity"/>
+		<property name="typeAliasesPackage" value="cn.zhxs.modules.*.entity"/>
 	    <!-- 以上配置和传统 Mybatis 一致 -->
 	
 	    <!-- 插件配置 -->
@@ -133,7 +133,8 @@
 	<!-- 热加载 -->
     <bean class="com.baomidou.mybatisplus.spring.MybatisMapperRefresh">
         <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
-        <constructor-arg name="mapperLocations" value="classpath:/mappings/**/*.xml"/>
+        <constructor-arg name="mapperLocations" value="classpath*:cn/zhxs/mappings/**/*.xml"/>
+        <!--<constructor-arg name="mapperLocations" value="classpath:/mappings/**/*.xml"/>-->
         <constructor-arg name="enabled" value="true"/>
     </bean>
     
